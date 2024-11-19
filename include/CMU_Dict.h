@@ -32,7 +32,7 @@ public:
      * @param (string) word: English word to look up.
      * @return Vector of strings, of the possible pronunciations recorded in the dictionary, each of which are a string of ARAPBET phones separated by spaces.
     */
-    std::vector<std::string> find_phones(std::string word);
+    std::vector<std::string> find_phones(std::string word) const;
 
     /**
      * Get an array of possible pronuncitation of each word from a text.

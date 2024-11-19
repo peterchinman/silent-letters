@@ -7,20 +7,23 @@
 
 // Main for Silent Letter Duplication
 int main() {
-    // CMU_Dict dict;
-    // dict.import_dictionary();
-    // std::string input_line;
-    // std::cout << "Enter a line of text: ";
-    // std::getline(std::cin, input_line);
+    CMU_Dict dict;
+    dict.import_dictionary();
+    while(true) {
+        std::string line;
+        std::cout << "Enter text: ";
+        std::getline(std::cin, line);
 
-    // std::istringstream iss(input_line);
-    // std::string word;
-
-    // while (iss >> word) {
-    //     std::string result = silent_letter_duplicator(dict.find_phones(word)[0], word);
-    //     std::cout << result << " ";
-    // }
-    // std::cout << std::endl;
+        std::istringstream iss{line};
+        std::string word{};
+        
+        while (iss >> word){
+            print_word_with_underscores(word, dict);
+            std::cout << " ";
+        }
+        std::cout << std::endl;
+    }
+    
 
     return 0;
 }

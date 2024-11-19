@@ -56,7 +56,7 @@ bool CMU_Dict::import_dictionary() {
 }
 
 // throws a std::exception if word not found
-std::vector<std::string> CMU_Dict::find_phones(std::string word) {
+std::vector<std::string> CMU_Dict::find_phones(std::string word) const {
     // capitalize all queries
     std::transform(word.begin(), word.end(), word.begin(), ::toupper);
     auto it = m_dictionary.find(word);
