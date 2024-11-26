@@ -1,5 +1,7 @@
 #pragma once
 
+
+
 #include <unordered_map>
 #include <vector>
 #include <string>
@@ -36,4 +38,7 @@ Word_Silent_Letter_Results pronunciations_to_silent_letter_indices(const std::st
 
 void print_word_with_underscores(std::string& word, const CMU_Dict & dict);
 
-std::string get_word_with_marked_silent_letters(std::string & word, const std::vector<std::string> & pronunciations, const std::string& insertSilentLetterStart, const std::string& insertSilentLetterEnd, bool replaceSilentLetters = false, const std::string& silentLetterReplacement = "");
+std::string get_word_with_marked_silent_letters(const std::string & word, const std::vector<std::string> & pronunciations, const std::string& insertSilentLetterStart, const std::string& insertSilentLetterEnd, bool replaceSilentLetters, const std::string& silentLetterReplacement);
+
+
+// std::string get_word_with_marked_silent_letters(std::string & word, const std::vector<std::string> & pronunciations, const std::string& insertSilentLetterStart, const std::string& insertSilentLetterEnd, bool replaceSilentLetters = false, const std::string& silentLetterReplacement = "");

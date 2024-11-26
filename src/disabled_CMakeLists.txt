@@ -1,0 +1,17 @@
+add_executable(silent-letters main.cpp CMU_Dict.cpp silent_letters.cpp)
+
+# Include directories
+target_include_directories(silent-letters PUBLIC ${CMAKE_SOURCE_DIR}/include)
+
+# START EMSCRIPTEN 
+# Specify the Emscripten compiler
+set(CMAKE_C_COMPILER emcc)
+set(CMAKE_CXX_COMPILER em++)
+
+# Add Emscripten-specific flags to output WASM
+set_target_properties(silent-letters PROPERTIES
+    OUTPUT_NAME "silent-letters"
+    LINK_FLAGS "-s WASM=1 -s MODULARIZE=1  -s EXPORT_NAME=\"createModule\" --bind 
+    -s EXPORTED_FUNCTIONS='[\"_get_word_with_marked_silent_letters\", \"_myFunction2\"]' -s EXPORTED_RUNTIME_METHODS='[\"ccall\", \"cwrap\"]'"
+)
+# END EMSCRIPTEN 

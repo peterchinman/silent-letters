@@ -1,25 +1,67 @@
 cmake_minimum_required(VERSION 3.14)
+
+# Add these lines BEFORE the project() call
+set(CMAKE_SYSTEM_NAME Emscripten)
+set(CMAKE_SYSTEM_VERSION 1)
+set(EMSCRIPTEN TRUE)
+
+
 project(silent-letters)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 
-# FetchContent setup to download Catch2
-include(FetchContent)
+# Ensure we're using Emscripten compilers
+set(CMAKE_C_COMPILER emcc)
+set(CMAKE_CXX_COMPILER em++)
 
-FetchContent_Declare(
-  Catch2
-  GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-  GIT_TAG        v3.7.1 
+# Specify the Emscripten toolchain file BEFORE the project() call
+set(CMAKE_TOOLCHAIN_FILE "/usr/local/Cellar/emscripten/3.1.61/libexec/cmake/Modules/Platform/Emscripten.cmake")
+
+# START EMSCRIPTEN ADD
+add_executable(silent-letters src/main.cpp src/CMU_Dict.cpp src/silent_letters.cpp)
+
+# Include directories
+target_include_directories(silent-letters PUBLIC ${CMAKE_SOURCE_DIR}/include)
+
+
+
+# # Specify the Emscripten compiler
+# set(CMAKE_C_COMPILER emcc)
+# set(CMAKE_CXX_COMPILER em++)
+
+
+# Add Emscripten-specific flags to output WASM
+set_target_properties(silent-letters PROPERTIES
+    LINK_FLAGS "-lembind -s INVOKE_RUN=0 -s MODULARIZE=1 --preload-file ${CMAKE_SOURCE_DIR}/data/cmudict-0.7b@/data/cmudict-0.7b -s EXPORTED_RUNTIME_METHODS='[\"ccall\", \"cwrap\"]'"
 )
 
-FetchContent_MakeAvailable(Catch2)
+
+
+# simplified setting that DO work
+# set_target_properties(silent-letters PROPERTIES
+#     SUFFIX ".js"
+#     LINK_FLAGS "--bind -s WASM=1"
+# )
+
+# END EMPSCRIPTEN ADD
+
+# FetchContent setup to download Catch2
+# include(FetchContent)
+
+# FetchContent_Declare(
+#   Catch2
+#   GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+#   GIT_TAG        v3.7.1 
+# )
+
+# FetchContent_MakeAvailable(Catch2)
 
 # Main application
-add_subdirectory(src)
+# add_subdirectory(src)
 
 # Enable testing
-enable_testing()
+# enable_testing()
 
 # Test directory
-add_subdirectory(tests)
+# add_subdirectory(tests)

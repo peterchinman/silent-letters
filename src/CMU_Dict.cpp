@@ -1,6 +1,8 @@
 #include "CMU_Dict.h"
 #include "convenience.h"
 
+#include <emscripten/bind.h>
+
 #include <fstream>
 #include <iostream>
 #include <set>
@@ -10,9 +12,12 @@
 #include <unordered_set>
 #include <vector>
 
+CMU_Dict::CMU_Dict() {
+    import_dictionary();
+}
 
 bool CMU_Dict::import_dictionary() {
-    const std::string file_path{"/Users/peterchinman/Documents/0B-Coding/00_projects/rhyme-and-meter/data/cmudict-0.7b"};
+    const std::string file_path{"/data/cmudict-0.7b"};
     std::ifstream cmudict{file_path};
     if (!cmudict.is_open()) {
         std::cerr << "Failed to open the dictionary." << '\n';
@@ -444,4 +449,10 @@ CMU_Dict::Check_Validity_Result CMU_Dict::check_end_rhyme_validity(const std::st
     return result;
 }
 
+EMSCRIPTEN_BINDINGS(my_module) {
+    emscripten::class_<CMU_Dict>("CMU_Dict")
+        .constructor<>()
+        .function("find_phones", &CMU_Dict::find_phones);
 
+    emscripten::register_vector<std::string>("StringVector");
+}

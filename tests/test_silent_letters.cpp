@@ -165,13 +165,14 @@ TEST_CASE_PERSISTENT_FIXTURE(Fixture, "silent_letters") {
 
     // POIGNANCY  P OY1 N Y AH0 N S IY0
     // OPPOSITE of Silent Letters! too many sounds
+    // KNOW, KNOWLEDGE
 
     SECTION("get_word_with_marked_silent_letters") {
         std::string word{"DUMB"};
         std::string prefix {"<span class='silent-letters'>"};
         std::string suffix {"</span>"};
 
-        std::string result = get_word_with_marked_silent_letters(word, dict.find_phones(word), prefix, suffix);
+        std::string result = get_word_with_marked_silent_letters(word, dict.find_phones(word), prefix, suffix, false, "");
         REQUIRE(result == "DUM<span class='silent-letters'>B</span>");
     }
 

@@ -7,6 +7,8 @@
 #include <vector>
 
 
+
+
 class CMU_Dict {
 private:
     // map of words with their CMU ARPABET_pronunciations, separated by spaces
@@ -21,6 +23,8 @@ private:
 
 
 public:
+
+    CMU_Dict();
     // assumes filepath "../data/cmudict-0.7b"
     bool import_dictionary();
 

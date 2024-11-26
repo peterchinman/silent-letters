@@ -1,5 +1,7 @@
 #include "CMU_Dict.h"
 #include "silent_letters.h"
+#include <emscripten/bind.h>
+
 #include <iostream>
 #include <sstream>
 
@@ -324,7 +326,10 @@ void print_word_with_underscores(std::string & word, const CMU_Dict & dict) {
     }
 }
 
-std::string get_word_with_marked_silent_letters(std::string & word, const std::vector<std::string> & pronunciations, const std::string& insertSilentLetterStart, const std::string& insertSilentLetterEnd, bool replaceSilentLetters, const std::string& silentLetterReplacement) {
+// instead I am using bindings
+// // for emscripten export
+// extern "C" EMSCRIPTEN_KEEPALIVE
+std::string get_word_with_marked_silent_letters(const std::string & word, const std::vector<std::string> & pronunciations, const std::string& insertSilentLetterStart, const std::string& insertSilentLetterEnd, bool replaceSilentLetters, const std::string& silentLetterReplacement) {
 
     std::string word_uppercase{word};
     std::transform(word_uppercase.begin(), word_uppercase.end(), word_uppercase.begin(), ::toupper);
@@ -332,15 +337,11 @@ std::string get_word_with_marked_silent_letters(std::string & word, const std::v
     Word_Silent_Letter_Results results {pronunciations_to_silent_letter_indices(word_uppercase, pronunciations)};
 
     if (results.phones_not_found == false) {
-        std::cout << "found phones" << std::endl;
-
         std::string marked_up_word{word};
         std::size_t marked_up_word_index{};
 
         // note that here we are sending i one past the end of the word string, so that it triggers the end of word out_of_range check
         for (std::size_t i{}; i <= word.size(); ++i){
-
-            std::cout << "current word: " << marked_up_word;
 
             // replace silent letters
             if (replaceSilentLetters) {    
@@ -348,7 +349,6 @@ std::string get_word_with_marked_silent_letters(std::string & word, const std::v
                     marked_up_word.replace(marked_up_word_index, 1, silentLetterReplacement);
                     if (silentLetterReplacement.size() > 0) {
                         std::size_t replacementDisplacement = silentLetterReplacement.size() - 1;
-                        std::cout << "replacementDisplacement: " << replacementDisplacement << std::endl;
                         marked_up_word_index += replacementDisplacement;
                     }
                     
@@ -359,7 +359,6 @@ std::string get_word_with_marked_silent_letters(std::string & word, const std::v
                 marked_up_word.insert(marked_up_word_index, insertSilentLetterStart);
                 if (insertSilentLetterStart.size() > 0) {
                     std::size_t replacementDisplacement = insertSilentLetterStart.size() - 1;
-                    std::cout << "start replacementDisplacement: " << replacementDisplacement << std::endl;
                     marked_up_word_index += replacementDisplacement;
                 }
                 
@@ -369,7 +368,6 @@ std::string get_word_with_marked_silent_letters(std::string & word, const std::v
                 marked_up_word.insert(marked_up_word_index + 1, insertSilentLetterEnd);
                 if (insertSilentLetterEnd.size() > 0) {
                     std::size_t replacementDisplacement = insertSilentLetterEnd.size() - 1;
-                    std::cout << "replacementDisplacement" << replacementDisplacement << std::endl;
                     marked_up_word_index += replacementDisplacement;
                 }
             }
@@ -383,6 +381,10 @@ std::string get_word_with_marked_silent_letters(std::string & word, const std::v
     }
 
     return word;
+}
+
+EMSCRIPTEN_BINDINGS(silent_letter_module) {
+    emscripten::function("get_word_with_marked_silent_letters", &get_word_with_marked_silent_letters);
 }
 
 
