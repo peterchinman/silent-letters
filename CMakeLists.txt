@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.14)
 
-# Add these lines BEFORE the project() call
-set(CMAKE_SYSTEM_NAME Emscripten)
-set(CMAKE_SYSTEM_VERSION 1)
-set(EMSCRIPTEN TRUE)
+# This also doesn't seem to be necessary
+# # Add these lines BEFORE the project() call
+# set(CMAKE_SYSTEM_NAME Emscripten)
+# set(CMAKE_SYSTEM_VERSION 1)
+# set(EMSCRIPTEN TRUE)
 
 
 project(silent-letters)
@@ -11,40 +12,29 @@ project(silent-letters)
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 
-# Ensure we're using Emscripten compilers
-set(CMAKE_C_COMPILER emcc)
-set(CMAKE_CXX_COMPILER em++)
-
-# Specify the Emscripten toolchain file BEFORE the project() call
-set(CMAKE_TOOLCHAIN_FILE "/usr/local/Cellar/emscripten/3.1.61/libexec/cmake/Modules/Platform/Emscripten.cmake")
 
 # START EMSCRIPTEN ADD
-add_executable(silent-letters src/main.cpp src/CMU_Dict.cpp src/silent_letters.cpp)
 
-# Include directories
-target_include_directories(silent-letters PUBLIC ${CMAKE_SOURCE_DIR}/include)
+    # Ensure we're using Emscripten compilers
+    set(CMAKE_C_COMPILER emcc)
+    set(CMAKE_CXX_COMPILER em++)
 
+    # Specify the Emscripten toolchain file BEFORE the project() call
+    set(CMAKE_TOOLCHAIN_FILE "/usr/local/Cellar/emscripten/3.1.61/libexec/cmake/Modules/Platform/Emscripten.cmake")
 
+    add_executable(silent-letters src/main.cpp src/CMU_Dict.cpp src/silent_letters.cpp)
 
-# # Specify the Emscripten compiler
-# set(CMAKE_C_COMPILER emcc)
-# set(CMAKE_CXX_COMPILER em++)
+    # Include directories
+    target_include_directories(silent-letters PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
-
-# Add Emscripten-specific flags to output WASM
-set_target_properties(silent-letters PROPERTIES
-    LINK_FLAGS "-lembind -s INVOKE_RUN=0 -s MODULARIZE=1 --preload-file ${CMAKE_SOURCE_DIR}/data/cmudict-0.7b@/data/cmudict-0.7b -s EXPORTED_RUNTIME_METHODS='[\"ccall\", \"cwrap\"]'"
-)
-
-
-
-# simplified setting that DO work
-# set_target_properties(silent-letters PROPERTIES
-#     SUFFIX ".js"
-#     LINK_FLAGS "--bind -s WASM=1"
-# )
+    # Add Emscripten-specific flags to output WASM
+    set_target_properties(silent-letters PROPERTIES
+        LINK_FLAGS "-lembind -s INVOKE_RUN=0 -s MODULARIZE=1 --preload-file ${CMAKE_SOURCE_DIR}/data/cmudict-0.7b@/data/cmudict-0.7b -s EXPORTED_RUNTIME_METHODS='[\"ccall\", \"cwrap\"]'"
+    )
 
 # END EMPSCRIPTEN ADD
+
+# START NON-EMSCRIPTEN BUILD
 
 # FetchContent setup to download Catch2
 # include(FetchContent)
@@ -65,3 +55,5 @@ set_target_properties(silent-letters PROPERTIES
 
 # Test directory
 # add_subdirectory(tests)
+
+# END NON-EMSCRIPTEN BUILD

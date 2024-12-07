@@ -326,9 +326,7 @@ void print_word_with_underscores(std::string & word, const CMU_Dict & dict) {
     }
 }
 
-// instead I am using bindings
-// // for emscripten export
-// extern "C" EMSCRIPTEN_KEEPALIVE
+// BOUND FUNCTION
 std::string get_word_with_marked_silent_letters(const std::string & word, const std::vector<std::string> & pronunciations, const std::string& insertSilentLetterStart, const std::string& insertSilentLetterEnd, bool replaceSilentLetters, const std::string& silentLetterReplacement) {
 
     std::string word_uppercase{word};
