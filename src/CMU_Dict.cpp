@@ -1,7 +1,9 @@
 #include "CMU_Dict.h"
 #include "convenience.h"
 
+#ifdef __EMSCRIPTEN__
 #include <emscripten/bind.h>
+#endif
 
 #include <fstream>
 #include <iostream>
@@ -17,7 +19,15 @@ CMU_Dict::CMU_Dict() {
 }
 
 bool CMU_Dict::import_dictionary() {
+
+    #ifdef __EMSCRIPTEN__
     const std::string file_path{"/data/cmudict-0.7b"};
+    #else
+    const std::string file_path{"../data/cmudict-0.7b"};
+    #endif
+
+    // Command Line Version
+
     std::ifstream cmudict{file_path};
     if (!cmudict.is_open()) {
         std::cerr << "Failed to open the dictionary." << '\n';
@@ -449,6 +459,8 @@ CMU_Dict::Check_Validity_Result CMU_Dict::check_end_rhyme_validity(const std::st
     return result;
 }
 
+#ifdef __EMSCRIPTEN__
+
 EMSCRIPTEN_BINDINGS(my_module) {
     emscripten::class_<CMU_Dict>("CMU_Dict")
         .constructor<>()
@@ -456,3 +468,5 @@ EMSCRIPTEN_BINDINGS(my_module) {
 
     emscripten::register_vector<std::string>("StringVector");
 }
+
+#endif

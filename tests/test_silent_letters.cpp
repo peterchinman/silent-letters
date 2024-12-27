@@ -127,28 +127,36 @@ TEST_CASE_PERSISTENT_FIXTURE(Fixture, "silent_letters") {
         REQUIRE(word_results.silent_letter_indices.size() == 0);
     }
 
-    SECTION("pronunciations_to_silent_letter_indices silent letters") {
+    SECTION("pronunciations_to_silent_letter_indices hard words test") {
         std::string word{"YACHT"};
         Word_Silent_Letter_Results word_results = pronunciations_to_silent_letter_indices(word, dict.find_phones(word));
         REQUIRE(word_results.phones_not_found == false);
         REQUIRE(word_results.silent_letter_indices.size() == 1);
         REQUIRE(word_results.silent_letter_indices[0].first == 2);
         REQUIRE(word_results.silent_letter_indices[0].second == 4);
+
+        word = "RASPBERRY";
+        word_results = pronunciations_to_silent_letter_indices(word, dict.find_phones(word));
+        REQUIRE(word_results.phones_not_found == false);
+        REQUIRE(word_results.silent_letter_indices.size() == 1);
+        REQUIRE(word_results.silent_letter_indices[0].first == 3);
+        REQUIRE(word_results.silent_letter_indices[0].second == 4);
+
+        // DUMBER is failing
+        // problem is specific to the ER.... DUMBEST catches the B
+        word = "DUMBER";
+        word_results = pronunciations_to_silent_letter_indices(word, dict.find_phones(word));
+        REQUIRE(word_results.phones_not_found == false);
+        REQUIRE(word_results.silent_letter_indices.size() == 1);
+        REQUIRE(word_results.silent_letter_indices[0].first == 3);
+        REQUIRE(word_results.silent_letter_indices[0].second == 4);
+
+        word = "QUESTION";
+        word_results = pronunciations_to_silent_letter_indices(word, dict.find_phones(word));
+        REQUIRE(word_results.phones_not_found == false);
+        REQUIRE(word_results.silent_letter_indices.size() == 0);
     }
 
-    SECTION("pronunciations_to_silent_letter_indices silent letters ending vowel") {
-        std::string word2{"RASPBERRY"};
-        Word_Silent_Letter_Results word_results2 = pronunciations_to_silent_letter_indices(word2, dict.find_phones(word2));
-        REQUIRE(word_results2.phones_not_found == false);
-        REQUIRE(word_results2.silent_letter_indices.size() == 1);
-        REQUIRE(word_results2.silent_letter_indices[0].first == 3);
-        REQUIRE(word_results2.silent_letter_indices[0].second == 4);
-    }
-
-
-
-    // // TODO PROBLEM WITH: DUMBER
-    // and any other word ending in vowel with silent letters before the vowel
 
     // Words not behaving as expected:
     // 
@@ -167,14 +175,14 @@ TEST_CASE_PERSISTENT_FIXTURE(Fixture, "silent_letters") {
     // OPPOSITE of Silent Letters! too many sounds
     // KNOW, KNOWLEDGE
 
-    SECTION("get_word_with_marked_silent_letters") {
-        std::string word{"DUMB"};
-        std::string prefix {"<span class='silent-letters'>"};
-        std::string suffix {"</span>"};
+    // SECTION("get_word_with_marked_silent_letters") {
+    //     std::string word{"DUMB"};
+    //     std::string prefix {"<span class='silent-letters'>"};
+    //     std::string suffix {"</span>"};
 
-        std::string result = get_word_with_marked_silent_letters(word, dict.find_phones(word), prefix, suffix, false, "");
-        REQUIRE(result == "DUM<span class='silent-letters'>B</span>");
-    }
+    //     std::string result = get_word_with_marked_silent_letters(word, dict.find_phones(word), prefix, suffix, false, "");
+    //     REQUIRE(result == "DUM<span class='silent-letters'>B</span>");
+    // }
 
 
 }

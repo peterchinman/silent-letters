@@ -1,6 +1,9 @@
 #include "CMU_Dict.h"
 #include "silent_letters.h"
+
+#ifdef __EMSCRIPTEN__
 #include <emscripten/bind.h>
+#endif
 
 #include <iostream>
 #include <sstream>
@@ -8,18 +11,18 @@
 // ordered by longest string to shortest string so that they get checked in the at order
 std::unordered_map<std::string, std::vector<std::string>> phone_realizations = {
     {"B", {"BB", "B"}},
-    {"CH", {"TI", "CH"}},
+    {"CH", {"TI", "CH"}}, // "TI" for words like QUESTION, BASTION
     {"D", {"DD", "D"}},
     {"DH", {"TH"}},
     {"F", {"GH", "PH", "FF", "F"}},
     {"G", {"G"}},
     {"HH", {"H"}},
     {"JH", {"J", "G"}},
-    {"K", {"Q", "K", "C", "X", "CH"}}, // quick, excite, schedule
+    {"K", {"Q", "K", "C", "CC", "X"}}, // quick, excite
     {"L", {"LL", "L"}},
     {"M", {"MM", "M"}},
     {"N", {"NN", "N"}},
-    {"NG", {"NG", "NDK"}},
+    {"NG", {"NG", "N"}}, //"N" as in HANDKERCHIEF, ACUPUNCTURE
     {"P", {"P"}},
     {"R", {"RR", "R"}},
     {"S", {"SS", "C", "S"}},
@@ -380,10 +383,13 @@ std::string get_word_with_marked_silent_letters(const std::string & word, const 
 
     return word;
 }
+#ifdef __EMSCRIPTEN__
 
 EMSCRIPTEN_BINDINGS(silent_letter_module) {
     emscripten::function("get_word_with_marked_silent_letters", &get_word_with_marked_silent_letters);
 }
+
+#endif
 
 
 
